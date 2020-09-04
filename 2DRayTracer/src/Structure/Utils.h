@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <random>
 #include "Ray.h"
+#include "Render/FrameBuffer.h"
 
 constexpr float EPS = 1e-9;
 
@@ -18,3 +19,6 @@ glm::vec2 lineIntersection(glm::vec2 l1, glm::vec2 d1, glm::vec2 l2, glm::vec2 d
 
 
 float randFloat();
+
+
+void drawRectangle(glm::vec2 start, glm::vec2 size, FrameBuffer& frame);

@@ -5,3 +5,11 @@ IntersectionInfo::IntersectionInfo() :_hitObject(nullptr), _distance(std::numeri
 
 IntersectionInfo::~IntersectionInfo() {
 }
+
+void IntersectionInfo::quickSetInfo(const Ray& ray, float t, const Object* obj) {
+    auto hitpos = t * ray.getDir() + ray.getStart();
+    setHitPos(hitpos);
+    setDistance(t);
+    setHitObject(obj);
+    setNormal(obj->getNormal(hitpos, ray.getDir()));
+}

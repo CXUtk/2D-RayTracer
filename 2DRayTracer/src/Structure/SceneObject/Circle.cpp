@@ -18,7 +18,7 @@ bool Circle::realRayIntersect(const Ray& ray, IntersectionInfo& info) const {
         info.setHitObject(this);
         info.setDistance(0);
         info.setHitPos(ray.getStart());
-        info.setNormal(glm::normalize(-diag));
+        info.setNormal(getNormal(ray.getStart(), ray.getDir()));
         return true;
     }
     if (t < 0) return false;
@@ -37,7 +37,7 @@ bool Circle::realRayIntersect(const Ray& ray, IntersectionInfo& info) const {
     info.setHitObject(this);
     info.setDistance(c);
     info.setHitPos(ray.getStart() + ray.getDir() * c);
-    info.setNormal(glm::normalize(-diag));
+    info.setNormal(getNormal(ray.getStart() + ray.getDir() * c, ray.getDir()));
     return true;
 }
 
@@ -53,6 +53,6 @@ bool Circle::rayInside(const Ray& ray) const {
     return glm::distance(ray.getStart(), _center) <= _radius;
 }
 
-glm::vec2 Circle::getNormal(glm::vec2 hitpos) const {
-    return glm::vec2(0);
+glm::vec2 Circle::getNormal(glm::vec2 hitpos, glm::vec2 dir) const {
+    return glm::normalize(hitpos - _center);
 }

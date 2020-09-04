@@ -14,7 +14,7 @@ public:
     virtual glm::vec3 getDiffuseColor(const glm::vec2& pos) const override;
     glm::vec3 getSampleColor(const glm::vec2& pos) const  override;
     bool rayInside(const Ray& ray) const override;
-    glm::vec2 getNormal(glm::vec2 hitpos) const override { return glm::vec2(0); }
+    glm::vec2 getNormal(glm::vec2 hitpos, glm::vec2 dir) const override { return glm::vec2(0); }
 
 private:
     // Points must ordered in counter-clockwise direction

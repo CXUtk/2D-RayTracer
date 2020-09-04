@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <memory>
 #include "Object.h"
-
+#include "Ray.h"
 class Object;
 class IntersectionInfo {
 public:
@@ -13,6 +13,7 @@ public:
     void setHitPos(glm::vec2 hitpos) { _hitPos = hitpos; }
     void setNormal(glm::vec2 normal) { _normal = normal; }
     void setInside(bool value) { _inside = value; }
+    void quickSetInfo(const Ray& ray, float t, const Object* obj);
 
 
     bool isInside() const { return _inside; }

@@ -14,7 +14,7 @@ public:
     virtual bool rayInside(const Ray& ray) const = 0;
     virtual glm::vec3 getDiffuseColor(const glm::vec2& pos) const = 0;
     virtual glm::vec3 getSampleColor(const glm::vec2& pos) const = 0;
-    virtual glm::vec2 getNormal(glm::vec2 hitpos) const = 0;
+    virtual glm::vec2 getNormal(glm::vec2 hitpos, glm::vec2 dir) const = 0;
 
     std::shared_ptr<Material> getMaterial() const { return _material; }
     void setMaterial(std::shared_ptr<Material> material) { _material = material; }

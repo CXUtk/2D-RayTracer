@@ -7,6 +7,9 @@ public:
     BoundingBox(glm::vec2 minPos, glm::vec2 maxPos);
     ~BoundingBox();
 
+    glm::vec2 getBottomLeft()const { return _minPos; }
+    glm::vec2 getUpperRight()const { return _maxPos; }
+
     bool rayIntersect(const Ray& ray, float& tNear) const;
 
     glm::vec2 getCenter() const { return (_minPos + _maxPos) / 2.f; }

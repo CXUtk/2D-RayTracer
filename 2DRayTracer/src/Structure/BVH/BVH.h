@@ -3,6 +3,7 @@
 #include "Structure/Object.h"
 #include "Structure/Ray.h"
 #include "Structure/IntersectionInfo.h"
+#include "Render/FrameBuffer.h"
 #include <vector>
 struct BVHNode {
     BoundingBox box;
@@ -17,10 +18,14 @@ public:
     ~BVHTree();
     void build(const std::vector<std::shared_ptr<Object>>& objects);
     bool rayIntersect(const Ray& ray, IntersectionInfo& info) const;
+    void walkRectangles(FrameBuffer& frame) const;
 private:
     int _tot, _root;
     BVHNode _nodes[4096];
     std::vector<Object*> _objects;
+
+    void _dfsDrawRect(int p, FrameBuffer& frame) const;
+
 
     int newNode(Object* optr);
     void push_up(int p);

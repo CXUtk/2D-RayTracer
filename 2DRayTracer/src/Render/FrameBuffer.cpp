@@ -7,6 +7,7 @@ FrameBuffer::FrameBuffer(int width, int height, int numChannel) : _numChannel(nu
 }
 
 void FrameBuffer::set_pixel(glm::ivec2 pos, const glm::vec3& color) {
+    if (pos.x < 0 || pos.x >= _width || pos.y < 0 || pos.y >= _height) return;
     pos.y = _height - 1 - pos.y;
     int start = _numChannel * (pos.y * _width + pos.x);
 

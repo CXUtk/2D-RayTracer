@@ -10,9 +10,7 @@ Polygon::Polygon(const std::vector<glm::vec2>& pts, std::shared_ptr<Material> ma
     int sz = _pts.size();
     auto normalTrans = glm::transpose(glm::inverse(modelTransform));
     for (int i = 0; i < sz; i++) {
-        glm::vec2 unit = glm::normalize(_pts[(i + 1) % sz] - _pts[i]);
-        glm::vec2 normal(unit.y, -unit.x);
-        auto p = std::make_shared<Segment>(_pts[(i + 1) % sz], _pts[i], normal);
+        auto p = std::make_shared<Segment>(_pts[(i + 1) % sz], _pts[i]);
         p->setMaterial(material);
         _segments.push_back(p);
     }
@@ -36,25 +34,29 @@ BoundingBox Polygon::getBoundingBox() const {
 }
 
 bool Polygon::realRayIntersect(const Ray& ray, IntersectionInfo& info) const {
-    if (!_tree->rayIntersect(ray, info))return false;
-    info.setNormal(info.getHitObject()->getNormal(glm::vec2(0)));
-    return true;
-    /*float finalT = std::numeric_limits<float>::max();
+#ifdef BRUTE
+    float finalT = std::numeric_limits<float>::max();
     bool can = false;
     for (auto& seg : _segments) {
-        float t;
-        if (seg.ray(ray, t)) {
-            if (t < finalT) {
+        IntersectionInfo tmp;
+        if (seg->realRayIntersect(ray, tmp)) {
+            if (tmp.getDistance() < finalT) {
                 info.setHitObject(this);
-                info.setDistance(t);
-                info.setHitPos(ray.getStart());
-                info.setNormal(seg.normal);
-                finalT = t;
+                info.setDistance(tmp.getDistance());
+                info.setHitPos(tmp.getHitPos());
+                info.setNormal(seg->getNormal(tmp.getHitPos(), ray.getDir()));
+                finalT = tmp.getDistance();
             }
             can = true;
         }
     }
-    return can;*/
+    return can;
+#else
+    if (!_tree->rayIntersect(ray, info))return false;
+    info.setNormal(info.getHitObject()->getNormal(info.getHitPos(), ray.getDir()));
+    info.setHitObject(this);
+    return true;
+#endif // BRUTE
 }
 
 glm::vec3 Polygon::getDiffuseColor(const glm::vec2& pos) const {

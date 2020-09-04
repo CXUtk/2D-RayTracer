@@ -1,4 +1,5 @@
 ﻿#include "BVH.h"
+#include "Structure/Utils.h"
 #include <algorithm>
 
 #define self _nodes[p]
@@ -25,6 +26,21 @@ void BVHTree::build(const std::vector<std::shared_ptr<Object>>& objects) {
 bool BVHTree::rayIntersect(const Ray& ray, IntersectionInfo& info) const {
     float t;
     return _nodes[_root].box.rayIntersect(ray, t) && ray_test(_root, ray, info, 0);
+}
+
+void BVHTree::walkRectangles(FrameBuffer& frame) const {
+    _dfsDrawRect(_root, frame);
+}
+
+void BVHTree::_dfsDrawRect(int p, FrameBuffer& frame) const {
+    if (!p) return;
+    if (self.object != nullptr) {
+        auto box = self.object->getBoundingBox();
+        drawRectangle(box.getBottomLeft(), box.getUpperRight() - box.getBottomLeft(), frame);
+    }
+    drawRectangle(self.box.getBottomLeft(), self.box.getUpperRight() - self.box.getBottomLeft(), frame);
+    _dfsDrawRect(chi(p, 0), frame);
+    _dfsDrawRect(chi(p, 1), frame);
 }
 
 int BVHTree::newNode(Object* optr) {

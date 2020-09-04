@@ -14,3 +14,15 @@ std::mt19937 random;
 float randFloat() {
     return random() / (float)random.max();
 }
+
+void drawRectangle(glm::vec2 start, glm::vec2 size, FrameBuffer& frame) {
+    glm::vec3 red = glm::vec3(1, 0, 0);
+    for (int i = start.x; i <= start.x + size.x; i++) {
+        frame.set_pixel(glm::ivec2(i, start.y), red);
+        frame.set_pixel(glm::ivec2(i, start.y + size.y), red);
+    }
+    for (int i = start.y; i <= start.y + size.y; i++) {
+        frame.set_pixel(glm::ivec2(start.x, i), red);
+        frame.set_pixel(glm::ivec2(start.x + size.x, i), red);
+    }
+}

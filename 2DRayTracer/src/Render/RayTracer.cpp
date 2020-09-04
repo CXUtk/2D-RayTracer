@@ -31,7 +31,8 @@ void RayTracer::run() {
         for (int k = 0; k < 10; k++) threads[k]->join();
         printf("%.2lf%%\n", i / (float)_height);
     }
-    buffer.set_pixel(glm::ivec2(0, 0), glm::vec3(1.f, 0, 0));
+    //_scene->showDebugInfo(buffer);
+    // buffer.set_pixel(glm::ivec2(0, 0), glm::vec3(1.f, 0, 0));
     stbi_write_png("test.png", _width, _height, 3, buffer.getData(), _width * 3);
 
     endTime = clock();  //计时结束
@@ -45,7 +46,7 @@ glm::vec3 RayTracer::castRay(const Ray& ray) {
 }
 
 void RayTracer::renderPos(glm::ivec2 pos, FrameBuffer& buffer) {
-    float sampleCount = 64;
+    float sampleCount = 256;
     glm::vec3 totColor(0);
     for (int i = 0; i < sampleCount; i++) {
         float r = glm::two_pi<float>() * (i + randFloat()) / sampleCount;
