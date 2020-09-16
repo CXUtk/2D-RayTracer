@@ -22,3 +22,8 @@ float randFloat();
 
 
 void drawRectangle(glm::vec2 start, glm::vec2 size, FrameBuffer& frame);
+
+
+void Bresenham(glm::ivec2 start, glm::ivec2 end, FrameBuffer& frame);
+
+bool raySegmentIntersect(const Ray& ray, glm::vec2 C, glm::vec2 D, float& t);

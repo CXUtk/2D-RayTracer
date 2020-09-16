@@ -18,13 +18,13 @@ Scene::Scene() {
 
     auto matNoLight = std::make_shared<Material>();
     matNoLight->setLight(false);
-    matNoLight->setReflectivity(0.f);
+    matNoLight->setReflectivity(0.1f);
     matNoLight->setDiffuseColor(glm::vec3(1, 1, 1));
 
     auto matNoLight2 = std::make_shared<Material>();
     matNoLight2->setLight(false);
-    matNoLight2->setReflectivity(0.4f);
-    matNoLight2->setDiffuseColor(glm::vec3(1, 1, 1));
+    matNoLight2->setReflectivity(1.f);
+    matNoLight2->setDiffuseColor(glm::vec3(1, 0, 0));
     //_sceneObjects.push_back(std::make_shared<Circle>(glm::vec2(400, 150), 40, matNoLight));
     _sceneObjects.push_back(std::make_shared<Circle>(glm::vec2(300, 400), 40, matLight));
     //_sceneObjects.push_back(std::make_shared<Circle>(glm::vec2(500, 400), 40, matNoLight));
@@ -35,24 +35,22 @@ Scene::Scene() {
     _sceneObjects.push_back(ShapeFactory::createRectangle(2, 500, glm::vec2(50, 50), matNoLight));
     _sceneObjects.push_back(ShapeFactory::createRectangle(2, 500, glm::vec2(750, 50), matNoLight));
 
-    //_sceneObjects.push_back(ShapeFactory::createRectangle(2, 100, glm::vec2(100, 300), matNoLight2));
-    //_sceneObjects.push_back(ShapeFactory::createRectangle(2, 100, glm::vec2(100, 150), matNoLight2));
+    _sceneObjects.push_back(ShapeFactory::createRectangle(2, 100, glm::vec2(150, 300), matNoLight2));
+    _sceneObjects.push_back(ShapeFactory::createRectangle(2, 100, glm::vec2(150, 150), matNoLight2));
 
 
-    glm::vec2 center(300, 200);
-    for (float r = 0; r > -glm::pi<float>(); r -= 0.1) {
-        _sceneObjects.push_back(ShapeFactory::createSegment(center + glm::vec2(cos(r), sin(r)) * 50.f, center + glm::vec2(cos(r - 0.1f), sin(r - 0.1f)) * 50.f,
-            matNoLight2));
-    }
+    //glm::vec2 center(300, 200);
+    //for (float r = 0; r > -glm::pi<float>() + 0.3f; r -= 0.05) {
+    //    _sceneObjects.push_back(ShapeFactory::createSegment(center + glm::vec2(cos(r), sin(r)) * 50.f, center + glm::vec2(cos(r - 0.05f), sin(r - 0.05f)) * 50.f,
+    //        matNoLight2));
+    //}
 
     //_sceneObjects.push_back(std::make_shared<Circle>(glm::vec2(550, 300), 50, matNoLight);
+    float t;
+    bool b = raySegmentIntersect(Ray(glm::vec2(0, 0), glm::vec2(1, 0)), glm::vec2(0.5, 0), glm::vec2(1, 0), t);
 
     _bvhTree = std::make_unique<BVHTree>();
     _bvhTree->build(_sceneObjects);
-    IntersectionInfo info;
-    glm::vec2 unit = glm::normalize(glm::vec2(1, 1));
-    bool test = _bvhTree->rayIntersect(Ray(glm::vec2(0, 0), unit), info);
-    std::cout << "test" << std::endl;
 }
 
 Scene::~Scene() {
@@ -104,7 +102,7 @@ glm::vec3 Scene::castRay(const Ray& ray, int depth) {
         glm::vec2 p = hitPos + normal;
         float rad = randFloat() * glm::pi<float>() - glm::pi<float>() / 2;
         float rad2 = atan2(normal.y, normal.x) + rad;
-        // glm::vec2 dir2 = glm::vec2(cos(rad2), sin(rad2));
+        //glm::vec2 dir2 = glm::vec2(cos(rad2), sin(rad2));
         glm::vec2 dir2 = glm::reflect(ray.getDir(), normal);
         glm::vec3 diffuse = hitObj->getDiffuseColor(glm::vec2(0));
         float d = intersectInfo.getDistance() / 200.f;

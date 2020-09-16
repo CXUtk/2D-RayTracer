@@ -11,40 +11,54 @@ BoundingBox Segment::getBoundingBox() const {
     return BoundingBox(minn, maxx);
 }
 
+
 bool Segment::realRayIntersect(const Ray& ray, IntersectionInfo& info) const {
-
-    glm::vec2 dir = glm::normalize(_end - _start);
-    float crs = cross2(ray.getDir(), dir);
-    // 如果平行
-    if (std::abs(crs) < EPS) {
-        // 如果不在射线上
-        if (glm::dot(_end - ray.getStart(), ray.getDir()) < 0) return false;
-        // 如果两个线是重叠的
-        if (std::abs(cross2(_end - ray.getStart(), dir)) < EPS) {
-            // 如果点在线段上
-            if (glm::dot(ray.getStart() - _start, dir) >= 0) {
-                info.setInside(true);
-                info.quickSetInfo(ray, 0, this);
-                return true;
-            }
-            // 否则选一个最近端点
-            float d1 = glm::distance(ray.getStart(), _start);
-            float d2 = glm::distance(ray.getStart(), _end);
-            info.quickSetInfo(ray, std::min(d1, d2), this);
-            return true;
-        }
-        return false;
+    //if (!dcmp(cross2(ray.getDir(), _end - _start))) {
+    //    if (glm::dot(ray.getStart() - _start, _end - _start) >= 0) {
+    //        info.setInside(true);
+    //        info.quickSetInfo(ray, 0, this);
+    //        return true;
+    //    }
+    //}
+    float d;
+    if (raySegmentIntersect(ray, _start, _end, d)) {
+        info.quickSetInfo(ray, d, this);
+        return true;
     }
+    return false;
 
-    auto v = lineIntersection(ray.getStart(), ray.getDir(), _start, dir);
-    float d = glm::dot(ray.getDir(), v - ray.getStart());
+    //glm::vec2 dir = glm::normalize(_end - _start);
+    //float crs = cross2(ray.getDir(), dir);
+    // 如果平行
+    //if (std::abs(crs) < EPS) {
+    //     如果不在射线上
+    //    if (glm::dot(_end - ray.getStart(), ray.getDir()) < 0) return false;
+    //     如果两个线是重叠的
+    //    if (std::abs(cross2(_end - ray.getStart(), dir)) < EPS) {
+    //         如果点在线段上
+    //        if (glm::dot(ray.getStart() - _start, dir) >= 0) {
+    //            info.setInside(true);
+    //            info.quickSetInfo(ray, 0, this);
+    //            return true;
+    //        }
+    //         否则选一个最近端点
+    //        float d1 = glm::distance(ray.getStart(), _start);
+    //        float d2 = glm::distance(ray.getStart(), _end);
+    //        info.quickSetInfo(ray, std::min(d1, d2), this);
+    //        return true;
+    //    }
+    //    return false;
+    //}
+
+    //auto v = lineIntersection(ray.getStart(), ray.getDir(), _start, dir);
+    //float d = glm::dot(ray.getDir(), v - ray.getStart());
     // 如果不在射线上
-    if (d < 0) return false;
+    //if (d < 0) return false;
 
     // 如果不在线段上
-    if (glm::dot(dir, v - _start) < 0 || glm::distance(v, _start) > glm::distance(_start, _end)) return false;
-    info.quickSetInfo(ray, d, this);
-    return true;
+    //if (glm::dot(dir, v - _start) < 0 || glm::distance(v, _start) > glm::distance(_start, _end)) return false;
+    //info.quickSetInfo(ray, d, this);
+    //return true;
 }
 
 bool Segment::rayInside(const Ray& ray) const {

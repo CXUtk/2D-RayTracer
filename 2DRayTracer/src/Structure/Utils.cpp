@@ -26,3 +26,57 @@ void drawRectangle(glm::vec2 start, glm::vec2 size, FrameBuffer& frame) {
         frame.set_pixel(glm::ivec2(start.x + size.x, i), red);
     }
 }
+
+void Bresenham(glm::ivec2 start, glm::ivec2 end, FrameBuffer& frame) {
+    bool swp = false;
+    int dx = end.x - start.x, dy = end.y - start.y;
+    int yInc = 1;
+    if (abs(dx) < abs(dy)) {
+        std::swap(dx, dy);
+        std::swap(start.x, start.y);
+        std::swap(end.x, end.y);
+        swp = true;
+    }
+    if (dx < 0) {
+        std::swap(start.x, end.x);
+        std::swap(start.y, end.y);
+        dx *= -1, dy *= -1;
+    }
+    if (dy < 0) {
+        yInc = -1;
+        dy *= -1;
+    }
+    int a = 2 * dy, b = 2 * (dy - dx);
+    int cur = 2 * dy - dx;
+    glm::vec3 red = glm::vec3(1, 0, 0);
+    for (int i = start.x, j = start.y; i <= end.x; i++) {
+        if (swp)
+            frame.set_pixel(glm::ivec2(j, i), red);
+        else
+            frame.set_pixel(glm::ivec2(i, j), red);
+        if (cur <= 0) {
+            cur += a;
+        }
+        else {
+            j += yInc;
+            cur += b;
+        }
+    }
+}
+
+bool raySegmentIntersect(const Ray& ray, glm::vec2 C, glm::vec2 D, float& t) {
+    glm::vec2 A = ray.getStart();
+    glm::vec2 B = ray.getDir();
+    float a = B.x, b = D.x - C.x;
+    float c = B.y, d = D.y - C.y;
+    float det = a * d - b * c;
+    t = 0;
+    if (!dcmp(det)) return false;
+    float k1 = D.x - A.x;
+    float k2 = D.y - A.y;
+    t = (d * k1 - b * k2) / det;
+    if (t < 0) return false;
+    float s = (-c * k1 + a * k2) / det;
+    if (s < 0 || s > 1) return false;
+    return true;
+}

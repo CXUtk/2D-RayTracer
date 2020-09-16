@@ -32,7 +32,9 @@ void RayTracer::run() {
         printf("%.2lf%%\n", i / (float)_height);
     }
     //_scene->showDebugInfo(buffer);
-    // buffer.set_pixel(glm::ivec2(0, 0), glm::vec3(1.f, 0, 0));
+    //for (float r = 0; r < 6.28f; r += 0.5f) {
+    //    Bresenham(glm::ivec2(100, 100), glm::ivec2(100 + cos(r) * 50, 100 + sin(r) * 50), buffer);
+    //}
     stbi_write_png("test.png", _width, _height, 3, buffer.getData(), _width * 3);
 
     endTime = clock();  //计时结束
@@ -46,13 +48,14 @@ glm::vec3 RayTracer::castRay(const Ray& ray) {
 }
 
 void RayTracer::renderPos(glm::ivec2 pos, FrameBuffer& buffer) {
-    float sampleCount = 256;
+    float sampleCount = 64;
     glm::vec3 totColor(0);
     for (int i = 0; i < sampleCount; i++) {
         float r = glm::two_pi<float>() * (i + randFloat()) / sampleCount;
         glm::vec2 dir(cos(r), sin(r));
+        glm::vec2 p2(randFloat(), randFloat());
         //castRay(Ray(glm::vec2(j, i), dir))
-        totColor += castRay(Ray(glm::vec2(pos), dir));
+        totColor += castRay(Ray(glm::vec2(pos) + p2, dir));
     }
     buffer.set_pixel(pos, totColor / sampleCount);
 }
